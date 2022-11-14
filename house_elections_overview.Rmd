@@ -1,7 +1,9 @@
 ---
 title: "House Elections Overview"
 author: "Chris Whaley"
-output: html_document
+output: 
+  html_document: 
+    keep_md: yes
 date: "2022-11-14"
 ---
 
