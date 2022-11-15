@@ -12,7 +12,13 @@ library(USAboundaries)
 library(sf)
 library(tmap)
 library(tidyverse)
+library(here)
+
+# interactive map view
 tmap_mode("view")
+
+# get and clean data
+source(here("code", "02_clean.R"))
 
 congress <- us_congressional()
 house_votes_2020 <- house_votes %>% 
