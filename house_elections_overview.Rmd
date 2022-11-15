@@ -43,8 +43,9 @@ House Elections in 2020
 house_map <- tm_shape(house_map_2020) +
   tm_borders() +
   tm_fill(col = "party_winner", palette = "-Set1",
-          id = "namelsad",
-          popup.vars = c("Party winner: " = "party_winner", 
+          id = "state_name",
+          popup.vars = c("District: " = "namelsad",
+                         "Party winner: " = "party_winner", 
                          "Candidate votes: " = "candidatevotes",
                          "Total votes in district: " = "totalvotes",
                          "Vote percentage: " = "winner_vote_pct")
