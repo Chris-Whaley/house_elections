@@ -7,26 +7,36 @@ output:
 date: "2022-11-14"
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+```{r, echo=FALSE}
+library(USAboundaries)
+library(sf)
+library(tmap)
+library(tidyverse)
+tmap_mode("view")
+
+congress <- us_congressional()
+house_votes_2020 <- house_votes %>% 
+  dplyr::filter(year == 2020 & stage == "GEN") %>% 
+  group_by(year, state, state_po, state_fips, office, district, totalvotes) %>% 
+  mutate(winning_votes = max(candidatevotes),
+         party_winner = if_else(candidatevotes == winning_votes, party, ''),
+         winning_margin = winning_votes/totalvotes
+  ) %>% 
+  ungroup() %>% 
+  dplyr::filter(party_winner != '')
+
+house_map_2020 <- congress %>% 
+  left_join(house_votes_2020, by = c("state_abbr" = "state_po",
+                                     "cd116fp" = "district"))
+
+house_map_2020 <- st_as_sf(house_map_2020, crs = st_crs(congress))
 ```
 
-## R Markdown
-
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
-```{r cars}
-summary(cars)
+House Elections in 2020
+```{r eval=TRUE}
+house_map <- tm_shape(house_map_2020) +
+  tm_borders() +
+  tm_fill(col = "party_winner", palette = "-Set1")
+house_map
 ```
 
-## Including Plots
-
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
