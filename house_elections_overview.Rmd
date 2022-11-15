@@ -26,7 +26,7 @@ house_votes_2020 <- house_votes %>%
   group_by(year, state, state_po, state_fips, office, district, totalvotes) %>% 
   mutate(winning_votes = max(candidatevotes),
          party_winner = if_else(candidatevotes == winning_votes, party, ''),
-         winning_margin = winning_votes/totalvotes
+         winner_vote_pct = winning_votes/totalvotes
   ) %>% 
   ungroup() %>% 
   dplyr::filter(party_winner != '')
@@ -42,7 +42,13 @@ House Elections in 2020
 ```{r eval=TRUE}
 house_map <- tm_shape(house_map_2020) +
   tm_borders() +
-  tm_fill(col = "party_winner", palette = "-Set1")
+  tm_fill(col = "party_winner", palette = "-Set1",
+          id = "namelsad",
+          popup.vars = c("Party winner: " = "party_winner", 
+                         "Candidate votes: " = "candidatevotes",
+                         "Total votes in district: " = "totalvotes",
+                         "Vote percentage: " = "winner_vote_pct")
+  )
 house_map
 ```
 
